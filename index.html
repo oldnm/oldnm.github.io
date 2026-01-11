@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保质期计算器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #6c757d;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-bg: #f8f9fc;
+            --border-color: #e3e6f0;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+        
+        .card {
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0.35rem 0.35rem 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 700;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5ccc;
+            border-color: #3a5ccc;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #17a673;
+            border-color: #17a673;
+        }
+        
+        .btn-outline-secondary {
+            color: var(--secondary-color);
+            border-color: var(--border-color);
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: var(--light-bg);
+            color: var(--secondary-color);
+            border-color: var(--border-color);
+        }
+        
+        .result-card {
+            background-color: #f0f3ff;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .saved-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+        
+        .saved-item:hover {
+            background-color: var(--light-bg);
+        }
+        
+        .saved-item:last-child {
+            border-bottom: none;
+        }
+        
+        .saved-item .expiry-date {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .saved-item .product-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .date-input-container {
+            position: relative;
+        }
+        
+        .clear-date {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            z-index: 5;
+        }
+        
+        .clear-date:hover {
+            color: var(--danger-color);
+        }
+        
+        .tab-content {
+            padding-top: 20px;
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--secondary-color);
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            border-color: var(--border-color);
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            font-weight: 700;
+            border-color: var(--border-color) var(--border-color) #fff;
+        }
+        
+        .badge {
+            font-weight: 600;
+            padding: 5px 10px;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .bg-success {
+            background-color: var(--success-color) !important;
+        }
+        
+        .bg-warning {
+            background-color: var(--warning-color) !important;
+        }
+        
+        .bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+        
+        .alert-info {
+            background-color: #f0f3ff;
+            border-color: #c2d6ff;
+            color: var(--primary-color);
+        }
+        
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 0;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--secondary-color);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .text-success {
+            color: var(--success-color) !important;
+        }
+        
+        .text-warning {
+            color: var(--warning-color) !important;
+        }
+        
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+        
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            color: white;
+        }
+        
+        .navbar {
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-calendar-check me-2"></i>
+                保质期计算器
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-muted small me-3 d-none d-md-block">轻松管理商品保质期</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- 标签页导航 -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                    <i class="bi bi-calculator me-1"></i> 计算器
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="saved-tab" data-bs-toggle="tab" data-bs-target="#saved" type="button" role="tab" aria-controls="saved" aria-selected="false">
+                    <i class="bi bi-save me-1"></i> 保存结果
+                    <span class="badge bg-primary ms-1" id="saved-count">0</span>
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- 计算器标签页 -->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-calendar-plus me-2"></i> 输入信息
+                            </div>
+                            <div class="card-body">
+                                <form id="expiryForm">
+                                    <div class="mb-3">
+                                        <label for="productName" class="form-label">商品名称 (可选)</label>
+                                        <input type="text" class="form-control" id="productName" placeholder="例如：牛奶、饼干、罐头">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="productionDate" class="form-label">生产日期</label>
+                                        <div class="date-input-container">
+                                            <input type="text" class="form-control" id="productionDate" placeholder="YYYY-MM-DD (输入数字自动添加-)" maxlength="10">
+                                            <button type="button" class="clear-date" id="clearDateBtn" title="清空日期">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-text">请输入YYYY-MM-DD格式，例如：2025-05-20</div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label for="shelfLife" class="form-label">保质期时长</label>
+                                            <input type="number" class="form-control" id="shelfLife" min="1" value="30">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="timeUnit" class="form-label">时间单位</label>
+                                            <select class="form-select" id="timeUnit">
+                                                <option value="days">天</option>
+                                                <option value="months" selected>月</option>
+                                                <option value="years">年</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2 d-md-flex">
+                                        <button type="submit" class="btn btn-primary flex-fill me-md-2">
+                                            <i class="bi bi-calculator me-1"></i> 计算到期日
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary flex-fill" id="resetBtn">
+                                            <i class="bi bi-arrow-clockwise me-1"></i> 重置
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="card result-card">
+                            <div class="card-header">
+                                <i class="bi bi-calendar-event me-2"></i> 计算结果
+                            </div>
+                            <div class="card-body">
+                                <div id="resultContainer">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        请输入生产日期和保质期信息，然后点击"计算到期日"按钮查看结果。
+                                    </div>
+                                </div>
+                                
+                                <div id="calculatedResult" class="d-none">
+                                    <h5 class="result-title">到期日期</h5>
+                                    <div class="result-value mb-3 text-primary" id="expiryDate"></div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <strong>商品名称：</strong>
+                                                <span id="resultProductName">未命名商品</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>生产日期：</strong>
+                                                <span id="resultProductionDate"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>保质期：</strong>
+                                                <span id="resultShelfLife"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <strong>剩余天数：</strong>
+                                                <span id="remainingDays" class="badge bg-primary"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>状态：</strong>
+                                                <span id="expiryStatus" class="badge bg-success">未过期</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 d-grid gap-2">
+                                        <button type="button" class="btn btn-success" id="saveResultBtn">
+                                            <i class="bi bi-save me-1"></i> 保存到结果列表
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-lightbulb me-2"></i> 使用说明
+                            </div>
+                            <div class="card-body">
+                                <ol class="mb-0">
+                                    <li>在"商品名称"字段中输入商品名称（可选）</li>
+                                    <li>在"生产日期"字段中输入生产日期，格式为YYYY-MM-DD，输入数字时会自动添加"-"</li>
+                                    <li>设置保质期时长和时间单位（天、月、年）</li>
+                                    <li>点击"计算到期日"按钮查看计算结果</li>
+                                    <li>点击"保存到结果列表"将计算结果保存到"保存结果"标签页</li>
+                                    <li>在"保存结果"标签页中可以查看所有已保存的商品保质期信息</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 保存结果标签页 -->
+            <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-save me-2"></i> 已保存的计算结果</span>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="clearAllBtn">
+                            <i class="bi bi-trash me-1"></i> 清空全部
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="savedResultsList">
+                            <!-- 保存的项目会动态添加到这里 -->
+                            <div class="empty-state" id="emptySavedState">
+                                <i class="bi bi-inbox"></i>
+                                <h5>暂无保存的结果</h5>
+                                <p>在计算器标签页中计算并保存结果后，将在此处显示</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="mt-5">
+        <div class="container text-center">
+            <p class="mb-0">保质期计算器 &copy; 2026 - 轻松管理商品保质期，确保食品安全</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 生产日期输入框自动格式化
+        document.getElementById('productionDate').addEventListener('input', function(e) {
+            let input = e.target.value.replace(/\D/g, '');
+            let formatted = '';
+            
+            if (input.length > 4) {
+                formatted = input.substring(0, 4) + '-' + input.substring(4, 6);
+                if (input.length > 6) {
+                    formatted += '-' + input.substring(6, 8);
+                }
+            } else {
+                formatted = input;
+            }
+            
+            e.target.value = formatted;
+        });
+        
+        // 清空日期按钮
+        document.getElementById('clearDateBtn').addEventListener('click', function() {
+            document.getElementById('productionDate').value = '';
+            document.getElementById('productionDate').focus();
+        });
+        
+        // 重置表单
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            document.getElementById('expiryForm').reset();
+            document.getElementById('calculatedResult').classList.add('d-none');
+            document.getElementById('resultContainer').classList.remove('d-none');
+        });
+        
+        // 计算到期日
+        document.getElementById('expiryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productName = document.getElementById('productName').value || '未命名商品';
+            const productionDateStr = document.getElementById('productionDate').value;
+            const shelfLife = parseInt(document.getElementById('shelfLife').value);
+            const timeUnit = document.getElementById('timeUnit').value;
+            
+            // 验证生产日期
+            if (!productionDateStr || !/^\d{4}-\d{2}-\d{2}$/.test(productionDateStr)) {
+                alert('请输入有效的生产日期，格式为YYYY-MM-DD');
+                return;
+            }
+            
+            // 验证保质期
+            if (!shelfLife || shelfLife <= 0) {
+                alert('请输入有效的保质期时长（大于0）');
+                return;
+            }
+            
+            const productionDate = new Date(productionDateStr);
+            if (isNaN(productionDate.getTime())) {
+                alert('生产日期无效，请检查格式是否正确');
+                return;
+            }
+            
+            // 计算到期日期
+            let expiryDate = new Date(productionDate);
+            
+            if (timeUnit === 'days') {
+                expiryDate.setDate(expiryDate.getDate() + shelfLife);
+            } else if (timeUnit === 'months') {
+                expiryDate.setMonth(expiryDate.getMonth() + shelfLife);
+            } else if (timeUnit === 'years') {
+                expiryDate.setFullYear(expiryDate.getFullYear() + shelfLife);
+            }
+            
+            // 计算剩余天数
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const timeDiff = expiryDate.getTime() - today.getTime();
+            const remainingDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            // 显示结果
+            document.getElementById('resultContainer').classList.add('d-none');
+            document.getElementById('calculatedResult').classList.remove('d-none');
+            
+            document.getElementById('resultProductName').textContent = productName;
+            document.getElementById('resultProductionDate').textContent = formatDate(productionDate);
+            document.getElementById('expiryDate').textContent = formatDate(expiryDate);
+            
+            let shelfLifeText = `${shelfLife} `;
+            if (timeUnit === 'days') shelfLifeText += '天';
+            else if (timeUnit === 'months') shelfLifeText += '个月';
+            else shelfLifeText += '年';
+            
+            document.getElementById('resultShelfLife').textContent = shelfLifeText;
+            document.getElementById('remainingDays').textContent = `${remainingDays} 天`;
+            
+            // 设置状态
+            const statusElement = document.getElementById('expiryStatus');
+            if (remainingDays < 0) {
+                statusElement.textContent = '已过期';
+                statusElement.className = 'badge bg-danger';
+            } else if (remainingDays <= 7) {
+                statusElement.textContent = '即将过期';
+                statusElement.className = 'badge bg-warning';
+            } else {
+                statusElement.textContent = '未过期';
+                statusElement.className = 'badge bg-success';
+            }
+        });
+        
+        // 保存结果
+        document.getElementById('saveResultBtn').addEventListener('click', function() {
+            const productName = document.getElementById('resultProductName').textContent;
+            const productionDate = document.getElementById('resultProductionDate').textContent;
+            const shelfLife = document.getElementById('resultShelfLife').textContent;
+            const expiryDate = document.getElementById('expiryDate').textContent;
+            const remainingDays = document.getElementById('remainingDays').textContent;
+            const status = document.getElementById('expiryStatus').textContent;
+            const statusClass = document.getElementById('expiryStatus').className;
+            
+            // 获取已保存的结果
+            let savedResults = JSON.parse(localStorage.getItem('shelfLifeResults') || '[]');
+            
+            // 创建新结果对象
+            const newResult = {
+                id: Date.now(),
+                productName,
+                productionDate,
+                shelfLife,
+                expiryDate,
+                remainingDays,
+                status,
+                statusClass,
+                savedDate: new Date().toLocaleString('zh-CN')
+            };
+            
+            // 添加到数组开头
+            savedResults.unshift(newResult);
+            
+            // 保存到localStorage
+            localStorage.setItem('shelfLifeResults', JSON.stringify(savedResults));
+            
+            // 更新UI
+            updateSavedResultsList();
+            updateSavedCount();
+            
+            // 显示成功消息
+            alert('结果已保存到"保存结果"标签页');
+            
+            // 切换到保存结果标签页
+            const savedTab = new bootstrap.Tab(document.getElementById('saved-tab'));
+            savedTab.show();
+        });
+        
+        // 清空所有保存的结果
+        document.getElementById('clearAllBtn').addEventListener('click', function() {
+            if (confirm('确定要清空所有保存的结果吗？此操作不可撤销。')) {
+                localStorage.removeItem('shelfLifeResults');
+                updateSavedResultsList();
+                updateSavedCount();
+            }
+        });
+        
+        // 格式化日期函数
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        // 更新保存结果列表
+        function updateSavedResultsList() {
+            const savedResults = JSON.parse(localStorage.getItem('shelfLifeResults') || '[]');
+            const savedResultsList = document.getElementById('savedResultsList');
+            const emptySavedState = document.getElementById('emptySavedState');
+            
+            if (savedResults.length === 0) {
+                emptySavedState.classList.remove('d-none');
+                savedResultsList.innerHTML = '';
+                savedResultsList.appendChild(emptySavedState);
+                return;
+            }
+            
+            emptySavedState.classList.add('d-none');
+            
+            let html = '';
+            savedResults.forEach(result => {
+                html += `
+                <div class="saved-item" data-id="${result.id}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="product-name mb-1">${result.productName}</div>
+                            <div class="small text-muted mb-1">
+                                <span class="me-3">生产日期: ${result.productionDate}</span>
+                                <span class="me-3">保质期: ${result.shelfLife}</span>
+                            </div>
+                            <div class="small">
+                                <span class="expiry-date">到期日: ${result.expiryDate}</span>
+                                <span class="badge ms-2 ${result.statusClass}">${result.status}</span>
+                                <span class="ms-2">剩余: ${result.remainingDays}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-danger delete-saved-btn" title="删除">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="small text-muted mt-2">
+                        保存时间: ${result.savedDate}
+                    </div>
+                </div>
+                `;
+            });
+            
+            savedResultsList.innerHTML = html;
+            
+            // 添加删除按钮事件
+            document.querySelectorAll('.delete-saved-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = parseInt(this.closest('.saved-item').getAttribute('data-id'));
+                    deleteSavedResult(itemId);
+                });
+            });
+        }
+        
+        // 删除单个保存的结果
+        function deleteSavedResult(id) {
+            let savedResults = JSON.parse(localStorage.getItem('shelfLifeResults') || '[]');
+            savedResults = savedResults.filter(result => result.id !== id);
+            localStorage.setItem('shelfLifeResults', JSON.stringify(savedResults));
+            updateSavedResultsList();
+            updateSavedCount();
+        }
+        
+        // 更新保存结果计数
+        function updateSavedCount() {
+            const savedResults = JSON.parse(localStorage.getItem('shelfLifeResults') || '[]');
+            document.getElementById('saved-count').textContent = savedResults.length;
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSavedResultsList();
+            updateSavedCount();
+            
+            // 设置今天的日期作为示例
+            const today = new Date();
+            const todayFormatted = formatDate(today);
+            document.getElementById('productionDate').value = todayFormatted;
+        });
+    </script>
+</body>
+</html>
