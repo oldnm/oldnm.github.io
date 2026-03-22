@@ -5,396 +5,858 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>保质期计算器</title>
 
-<!-- Bootstrap & icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-  body { background:#f5f7fb; }
-  .card { border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.05); border:none; }
-  .nav-pills .nav-link.active { background:#4e73df; color:#fff; }
-  .info-box { background:#eef4ff; border-left:4px solid #4e73df; padding:12px; border-radius:8px; color:#1f4ed8; }
-  .record-card { background:#fff; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.03); }
-  .record-meta { color:#6c757d; font-size:0.95rem; }
-  .btn-icon { width:36px; height:36px; padding:6px; display:inline-flex; align-items:center; justify-content:center; }
-  .small-muted { color:#708090; font-size:0.92rem; }
+  :root{
+    --brand:#4e73df;
+    --brand-2:#1f6feb;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --muted:#6c757d;
+    --danger:#dc3545;
+    --success:#198754;
+    --warning:#f0ad4e;
+  }
+  body{ background:var(--bg); color:#212529; }
+  .app-wrap{ max-width:900px; }
+  .app-title{ font-weight:800; letter-spacing:.2px; }
+  .top-tabs .nav-link{
+    border-radius:14px;
+    padding:.9rem 1.25rem;
+    font-weight:700;
+    color:var(--brand-2);
+    background:transparent;
+    border:1px solid transparent;
+  }
+  .top-tabs .nav-link.active{
+    color:#fff;
+    background:var(--brand);
+    box-shadow:0 10px 24px rgba(78,115,223,.2);
+  }
+  .sub-tabs .nav-link{
+    border-radius:12px;
+    font-weight:700;
+    color:#345;
+    background:#eef3ff;
+    margin-right:.5rem;
+    border:1px solid rgba(78,115,223,.12);
+  }
+  .sub-tabs .nav-link.active{
+    background:var(--brand);
+    color:#fff;
+    box-shadow:0 8px 18px rgba(78,115,223,.18);
+  }
+  .cardx{
+    background:var(--card);
+    border-radius:22px;
+    border:none;
+    box-shadow:0 10px 26px rgba(20,24,40,.06);
+  }
+  .section-title{
+    font-size:1.05rem;
+    font-weight:800;
+    margin-bottom:1rem;
+  }
+  .info-box{
+    background:#eef4ff;
+    border-left:5px solid var(--brand);
+    padding:14px 14px;
+    border-radius:14px;
+    color:#1f4ed8;
+    line-height:1.55;
+    word-break:break-word;
+  }
+  .record-card{
+    background:#fff;
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:14px;
+    box-shadow:0 2px 14px rgba(0,0,0,.04);
+    border:1px solid rgba(0,0,0,.03);
+  }
+  .record-meta{ color:#6c757d; font-size:.96rem; line-height:1.6; }
+  .record-name{ font-weight:800; font-size:1.02rem; }
+  .btn-icon{
+    width:40px; height:40px;
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:0;
+    border-radius:12px;
+  }
+  .small-muted{ color:#708090; font-size:.93rem; }
+  .form-label{ font-weight:700; }
+  .form-control, .form-select{
+    border-radius:14px;
+    padding:.9rem 1rem;
+  }
+  .btn{ border-radius:14px; font-weight:700; }
+  .btn-primary{ background:var(--brand-2); border-color:var(--brand-2); }
+  .btn-primary:hover{ background:#155cc1; border-color:#155cc1; }
+  .btn-outline-primary{ color:var(--brand-2); border-color:var(--brand-2); }
+  .btn-outline-primary:hover{ background:var(--brand-2); border-color:var(--brand-2); }
+  .badge-soft{
+    background:#eaf0ff;
+    color:var(--brand-2);
+    border:1px solid rgba(78,115,223,.14);
+  }
+  .result-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    flex-wrap:wrap;
+    margin-bottom:.75rem;
+  }
+  .tool-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+    padding:.35rem .7rem;
+    border-radius:999px;
+    background:#eef4ff;
+    color:#1f4ed8;
+    font-size:.88rem;
+    font-weight:700;
+  }
+  .footer-note{ color:#6c757d; }
+  .btn-export-group .btn{ min-width:98px; }
+  .sticky-actions{ position:relative; }
+  @media (max-width: 575.98px){
+    .top-tabs .nav-link{ padding:.8rem 1rem; }
+    .btn-export-group .btn{ min-width:auto; }
+  }
+
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;height:70px;
+  background:#fff;display:flex;justify-content:space-around;align-items:center;
+  box-shadow:0 -4px 16px rgba(0,0,0,.08);z-index:999;
+}
+.bottom-nav .nav-item{
+  display:flex;flex-direction:column;align-items:center;font-size:12px;color:#999;
+}
+.bottom-nav .nav-item i{font-size:22px;margin-bottom:4px;}
+.bottom-nav .nav-item.active{color:var(--brand-2);font-weight:700;}
+body{padding-bottom:80px;}
+
 </style>
 </head>
 <body>
-<div class="container py-3" style="max-width:780px;">
-
-  <!-- Header -->
+<div class="container py-3 app-wrap">
   <div class="d-flex align-items-center mb-3">
     <i class="bi bi-calendar-check fs-4 me-2"></i>
-    <h5 class="mb-0">保质期计算器</h5>
+    <h4 class="mb-0 app-title">保质期计算器</h4>
   </div>
 
-  <!-- Tabs -->
-  <ul class="nav nav-pills mb-3">
+  <ul class="nav nav-pills top-tabs mb-3 gap-2">
     <li class="nav-item">
-      <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabCalc"><i class="bi bi-calculator me-1"></i> 计算器</button>
+      <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabCalc" type="button">
+        <i class="bi bi-calculator me-1"></i> 计算器
+      </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabSaved"><i class="bi bi-save me-1"></i> 保存结果 <span class="badge bg-primary ms-1" id="countBadge">0</span></button>
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabSaved" type="button">
+        <i class="bi bi-save me-1"></i> 保存结果 <span class="badge bg-primary ms-1" id="countBadge">0</span>
+      </button>
     </li>
   </ul>
 
   <div class="tab-content">
 
-    <!-- 计算器 Tab -->
+    <!-- 计算器 -->
     <div class="tab-pane fade show active" id="tabCalc">
-      <div class="card mb-3">
-        <div class="card-body">
+      <div class="card cardx mb-3">
+        <div class="card-body p-3 p-md-4">
+                
 
-          <h6 class="mb-3"><i class="bi bi-input-cursor-text me-1"></i> 输入信息</h6>
+          <div class="tab-content">
+            <!-- 到期日计算 -->
+            <div class="tab-pane fade show active" id="toolExpiry" role="tabpanel">
+              <div class="section-title"><i class="bi bi-input-cursor-text me-1"></i> 输入信息</div>
 
-          <div class="mb-3">
-            <label class="form-label">商品名称（可选）</label>
-            <input id="productName" class="form-control" placeholder="例如：牛奶、饼干">
-          </div>
+              <div class="mb-3">
+                <label class="form-label">商品名称（可选）</label>
+                <input id="productName1" class="form-control" placeholder="例如：牛奶、饼干">
+              </div>
 
-          <div class="mb-3">
-            <label class="form-label">生产日期</label>
-            <div class="input-group">
-              <input id="productionDate" class="form-control" placeholder="YYYY-MM-DD" maxlength="10" />
-              <button id="clearDateBtn" class="btn btn-outline-secondary" type="button" title="清空生产日期">✕</button>
+              <div class="mb-3">
+                <label class="form-label">生产日期</label>
+                <div class="input-group">
+                  <input id="productionDate" class="form-control" placeholder="YYYY-MM-DD" maxlength="10" />
+                  <button id="clearDateBtn" class="btn btn-outline-secondary" type="button" title="清空生产日期">✕</button>
+                </div>
+                <div class="form-text">请输入 YYYY-MM-DD，输入数字会自动补 “-”。</div>
+              </div>
+
+              <div class="mb-3 row g-2">
+                <div class="col-12 col-md-7">
+                  <label class="form-label">保质期时长</label>
+                  <input id="shelfValue" type="number" class="form-control" placeholder="例如：30">
+                </div>
+                <div class="col-12 col-md-5">
+                  <label class="form-label">时间单位</label>
+                  <select id="shelfUnit" class="form-select">
+                    <option value="days">天</option>
+                    <option value="weeks">周</option>
+                    <option value="months">月</option>
+                    <option value="years">年</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 d-sm-flex">
+                <button id="calcBtn" class="btn btn-primary flex-fill">计算到期日</button>
+                <button id="resetBtn" class="btn btn-light flex-fill">重置</button>
+              </div>
+
+              <div class="card cardx mt-3">
+                <div class="card-body">
+                  <div class="result-head">
+                    <div class="section-title mb-0"><i class="bi bi-calculator-fill me-1"></i> 计算结果</div>
+                    <span class="tool-pill"><i class="bi bi-bookmark-plus"></i> 可保存到结果列表</span>
+                  </div>
+                  <div id="resultBox1" class="info-box">请输入生产日期和保质期信息，然后点击“计算到期日”。</div>
+                </div>
+              </div>
             </div>
-            <div class="form-text">请输入 YYYY-MM-DD，输入数字会自动补 “-”。</div>
+
+            <!-- 时间差计算 -->
+            <div class="tab-pane fade" id="toolDiff" role="tabpanel">
+              <div class="section-title"><i class="bi bi-input-cursor-text me-1"></i> 输入信息</div>
+
+              <div class="mb-3">
+                <label class="form-label">商品名称（可选）</label>
+                <input id="productName2" class="form-control" placeholder="例如：口罩、面膜">
+              </div>
+
+              <div class="mb-3 row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label">起始日期</label>
+                  <input id="startDate" class="form-control" placeholder="YYYY-MM-DD" maxlength="10" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label">结束日期</label>
+                  <input id="endDate" class="form-control" placeholder="YYYY-MM-DD" maxlength="10" />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">计算模式</label>
+                <select id="diffMode" class="form-select">
+                  <option value="inclusive">当天开始</option>
+                  <option value="exclusive">次日开始</option>
+                </select>
+                <div class="form-text">“当天开始”按起始日期当天计入；“次日开始”不计起始日。</div>
+              </div>
+
+              <div class="d-grid gap-2 d-sm-flex">
+                <button id="calcDiffBtn" class="btn btn-primary flex-fill">计算时间差</button>
+                <button id="resetDiffBtn" class="btn btn-light flex-fill">重置</button>
+              </div>
+
+              <div class="card cardx mt-3">
+                <div class="card-body">
+                  <div class="result-head">
+                    <div class="section-title mb-0"><i class="bi bi-hourglass-split me-1"></i> 计算结果</div>
+                    <span class="tool-pill"><i class="bi bi-bookmark-plus"></i> 可保存到结果列表</span>
+                  </div>
+                  <div id="resultBox2" class="info-box">请输入起始日期、结束日期和计算模式，然后点击“计算时间差”。</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 倒推生产日期 -->
+            <div class="tab-pane fade" id="toolReverse" role="tabpanel">
+              <div class="section-title"><i class="bi bi-input-cursor-text me-1"></i> 输入信息</div>
+
+              <div class="mb-3">
+                <label class="form-label">商品名称（可选）</label>
+                <input id="productName3" class="form-control" placeholder="例如：酸奶、药膏">
+              </div>
+
+              <div class="mb-3 row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label">过期日期</label>
+                  <input id="expirationDate" class="form-control" placeholder="YYYY-MM-DD" maxlength="10" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label">保质期时长</label>
+                  <input id="reverseShelfValue" type="number" class="form-control" placeholder="例如：30">
+                </div>
+              </div>
+
+              <div class="mb-3 row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label">时间单位</label>
+                  <select id="reverseShelfUnit" class="form-select">
+                    <option value="days">天</option>
+                    <option value="weeks">周</option>
+                    <option value="months">月</option>
+                    <option value="years">年</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-6 d-flex align-items-end">
+                  <div class="small-muted">输入过期日期与保质期后，可倒推出生产日期。</div>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 d-sm-flex">
+                <button id="calcReverseBtn" class="btn btn-primary flex-fill">倒推生产日期</button>
+                <button id="resetReverseBtn" class="btn btn-light flex-fill">重置</button>
+              </div>
+
+              <div class="card cardx mt-3">
+                <div class="card-body">
+                  <div class="result-head">
+                    <div class="section-title mb-0"><i class="bi bi-arrow-counterclockwise me-1"></i> 计算结果</div>
+                    <span class="tool-pill"><i class="bi bi-bookmark-plus"></i> 可保存到结果列表</span>
+                  </div>
+                  <div id="resultBox3" class="info-box">请输入过期日期和保质期信息，然后点击“倒推生产日期”。</div>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div class="mb-3">
-            <label class="form-label">保质期时长</label>
-            <input id="shelfValue" type="number" class="form-control" placeholder="例如：30">
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">时间单位</label>
-            <select id="shelfUnit" class="form-select">
-              <option value="days">天</option>
-              <option value="months">月</option>
-              <option value="years">年</option>
-            </select>
-          </div>
-
-          <div class="d-grid gap-2">
-            <button id="calcBtn" class="btn btn-primary">计算到期日</button>
-            <button id="resetBtn" class="btn btn-light">重置</button>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <h6 class="mb-2"><i class="bi bi-calculator-fill me-1"></i> 计算结果</h6>
-          <div id="resultBox" class="info-box">请输入生产日期和保质期信息，然后点击“计算到期日”。</div>
         </div>
       </div>
     </div>
 
-    <!-- 保存结果 Tab -->
+    <!-- 保存结果 -->
     <div class="tab-pane fade" id="tabSaved">
-      <div class="card mb-3">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <i class="bi bi-archive me-2"></i>
-            <h6 class="mb-0">已保存的计算结果</h6>
+      <div class="card cardx mb-3">
+        <div class="card-body p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-archive me-2 fs-5"></i>
+              <h5 class="mb-0 fw-bold">已保存的计算结果</h5>
+            </div>
+            <div class="d-flex gap-2 flex-wrap btn-export-group">
+              <button id="deleteSelectedBtn" class="btn btn-outline-danger">删除选中</button>
+              <button id="clearAllBtn" class="btn btn-outline-danger">清空全部</button>
+              <button id="exportBtn" class="btn btn-success"><i class="bi bi-file-earmark-excel me-1"></i> 导出所选</button>
+            </div>
           </div>
-          <div class="d-flex gap-2">
-            <button id="deleteSelectedBtn" class="btn btn-outline-danger btn-sm">删除选中</button>
-            <button id="clearAllBtn" class="btn btn-outline-danger btn-sm">清空全部</button>
-            <button id="exportBtn" class="btn btn-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i> 导出所选</button>
+
+          <div class="mb-2 d-flex align-items-center gap-2">
+            <input type="checkbox" id="selectAll" class="form-check-input">
+            <label for="selectAll" class="form-check-label small-muted">全选（用于导出或删除）</label>
           </div>
+
+          <div id="savedList"></div>
         </div>
       </div>
-
-      <!-- 选择全选 -->
-      <div class="mb-2 d-flex align-items-center">
-        <input type="checkbox" id="selectAll" class="form-check-input me-2">
-        <label for="selectAll" class="form-check-label small-muted">全选（用于导出或删除）</label>
-      </div>
-
-      <!-- 列表容器 -->
-      <div id="savedList"></div>
-
     </div>
-
   </div>
 
-  <p class="text-center text-muted small mt-4">保质期计算器 © 2026</p>
+  <p class="text-center footer-note small mt-4 mb-2">保质期计算器 © 2026</p>
 </div>
 
-<!-- SheetJS -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* --------- utils --------- */
-function formatNowSlash() {
-  const d = new Date();
-  const Y = d.getFullYear();
-  const M = d.getMonth()+1;
-  const D = d.getDate();
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  const ss = String(d.getSeconds()).padStart(2,'0');
-  return `${Y}/${M}/${D} ${hh}:${mm}:${ss}`;
-}
+(function(){
+  const STORAGE_KEY = 'expiryRecords_v2';
+  let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
-function pad2(n){ return String(n).padStart(2,'0'); }
+  const $ = (id) => document.getElementById(id);
+  const countBadge = $('countBadge');
+  const savedList = $('savedList');
+  const selectAll = $('selectAll');
 
-/* --------- storage --------- */
-let records = JSON.parse(localStorage.getItem('expiryRecords') || '[]');
-const updateStorage = ()=> {
-  localStorage.setItem('expiryRecords', JSON.stringify(records));
-  countBadge.innerText = records.length;
-};
+  const els = {
+    // expiry
+    productName1: $('productName1'), productionDate: $('productionDate'), clearDateBtn: $('clearDateBtn'),
+    shelfValue: $('shelfValue'), shelfUnit: $('shelfUnit'), calcBtn: $('calcBtn'), resetBtn: $('resetBtn'), resultBox1: $('resultBox1'),
+    // diff
+    productName2: $('productName2'), startDate: $('startDate'), endDate: $('endDate'), diffMode: $('diffMode'), calcDiffBtn: $('calcDiffBtn'), resetDiffBtn: $('resetDiffBtn'), resultBox2: $('resultBox2'),
+    // reverse
+    productName3: $('productName3'), expirationDate: $('expirationDate'), reverseShelfValue: $('reverseShelfValue'), reverseShelfUnit: $('reverseShelfUnit'), calcReverseBtn: $('calcReverseBtn'), resetReverseBtn: $('resetReverseBtn'), resultBox3: $('resultBox3'),
+    // saved
+    deleteSelectedBtn: $('deleteSelectedBtn'), clearAllBtn: $('clearAllBtn'), exportBtn: $('exportBtn')
+  };
 
-/* ---------- elements ---------- */
-const productionDate = document.getElementById('productionDate');
-const clearDateBtn = document.getElementById('clearDateBtn');
-const productName = document.getElementById('productName');
-const shelfValue = document.getElementById('shelfValue');
-const shelfUnit = document.getElementById('shelfUnit');
-const calcBtn = document.getElementById('calcBtn');
-const resetBtn = document.getElementById('resetBtn');
-const resultBox = document.getElementById('resultBox');
-
-const savedList = document.getElementById('savedList');
-const countBadge = document.getElementById('countBadge');
-const selectAll = document.getElementById('selectAll');
-const exportBtn = document.getElementById('exportBtn');
-const clearAllBtn = document.getElementById('clearAllBtn');
-const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
-
-/* init count */
-countBadge.innerText = records.length;
-
-/* --------- 输入自动格式化 YYYY-MM-DD --------- */
-productionDate.addEventListener('input', function(){
-  let raw = this.value.replace(/\D/g,'');
-  if (raw.length > 4) raw = raw.slice(0,4) + '-' + raw.slice(4);
-  if (raw.length > 7) raw = raw.slice(0,7) + '-' + raw.slice(7);
-  this.value = raw.slice(0,10);
-});
-clearDateBtn.addEventListener('click', ()=> productionDate.value = '');
-resetBtn.addEventListener('click', ()=>{
-  productName.value=''; productionDate.value=''; shelfValue.value=''; shelfUnit.value='days';
-  resultBox.innerHTML = '请输入生产日期和保质期信息，然后点击“计算到期日”。';
-});
-
-/* --------- 状态判断函数（代码内使用） --------- */
-/* 返回 {statusText, badgeClass, diffDays} */
-function judgeStatus(expDate){
-  const today = new Date(); today.setHours(0,0,0,0);
-  const exp = new Date(expDate); exp.setHours(0,0,0,0);
-  const diff = Math.floor((exp - today)/86400000); // expiration - today
-  let statusText = '', badgeClass = '';
-  if (diff < 0) {
-    statusText = '已过期';
-    badgeClass = 'bg-danger';
-  } else if (diff <= 7) {
-    statusText = '即将过期';
-    badgeClass = 'bg-warning text-dark';
-  } else if (diff <= 15) {
-    statusText = '临期';
-    badgeClass = 'bg-warning text-dark';
-  } else {
-    statusText = '未过期';
-    badgeClass = 'bg-success';
+  function escapeHtml(s){
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
   }
-  return { statusText, badgeClass, diffDays: diff };
-}
 
-/* --------- 计算函数 --------- */
-calcBtn.addEventListener('click', ()=>{
-  const name = productName.value.trim() || '（未命名）';
-  const prod = productionDate.value.trim();
-  const val = parseInt(shelfValue.value);
-  const unit = shelfUnit.value;
-  if (!prod || !val && val !== 0) { alert('请填写生产日期和保质期时长'); return; }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function formatDate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+  function stripTime(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function formatNowSlash(){
+    const d = new Date();
+    return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+  }
+  function parseDateInput(str){
+    const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(String(str || '').trim());
+    if (!m) return null;
+    const y = Number(m[1]), mo = Number(m[2]), da = Number(m[3]);
+    const d = new Date(y, mo - 1, da);
+    if (d.getFullYear() !== y || d.getMonth() !== mo - 1 || d.getDate() !== da) return null;
+    return d;
+  }
+  function normalizeDateInput(el){
+    let raw = el.value.replace(/\D/g, '').slice(0,8);
+    if (raw.length > 4) raw = raw.slice(0,4) + '-' + raw.slice(4);
+    if (raw.length > 7) raw = raw.slice(0,7) + '-' + raw.slice(7);
+    el.value = raw.slice(0,10);
+  }
+  function addDuration(baseDate, value, unit){
+    const d = new Date(baseDate);
+    if (unit === 'days') d.setDate(d.getDate() + value);
+    else if (unit === 'weeks') d.setDate(d.getDate() + value * 7);
+    else if (unit === 'months') d.setMonth(d.getMonth() + value);
+    else if (unit === 'years') d.setFullYear(d.getFullYear() + value);
+    return d;
+  }
+  function subtractDuration(baseDate, value, unit){
+    return addDuration(baseDate, -value, unit);
+  }
+  function judgeStatus(expDate){
+    const today = stripTime(new Date());
+    const exp = stripTime(expDate);
+    const diff = Math.floor((exp - today) / 86400000);
+    let statusText = '', badgeClass = '';
+    if (diff < 0) { statusText = '已过期'; badgeClass = 'bg-danger'; }
+    else if (diff <= 7) { statusText = '即将过期'; badgeClass = 'bg-warning text-dark'; }
+    else if (diff <= 15) { statusText = '临期'; badgeClass = 'bg-warning text-dark'; }
+    else { statusText = '未过期'; badgeClass = 'bg-success'; }
+    return { statusText, badgeClass, diffDays: diff };
+  }
+  function updateStorage(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    countBadge.innerText = records.length;
+  }
 
-  // parse prod date
-  const base = new Date(prod);
-  if (isNaN(base)) { alert('生产日期格式不正确'); return; }
+  function renderResultBox(el, html){ el.innerHTML = html; }
 
-  const exp = new Date(base);
-  if (unit === 'days') exp.setDate(exp.getDate() + val);
-  if (unit === 'months') exp.setMonth(exp.getMonth() + val);
-  if (unit === 'years') exp.setFullYear(exp.getFullYear() + val);
+  function modeLabel(mode){ return mode === 'inclusive' ? '当天开始' : '次日开始'; }
+  function unitLabel(unit){ return ({days:'天', weeks:'周', months:'月', years:'年'})[unit] || unit; }
 
-  const expStr = `${exp.getFullYear()}-${pad2(exp.getMonth()+1)}-${pad2(exp.getDate())}`;
-  const lifeText = `${val}${ (unit==='days'?' 天':unit==='months'?' 月':' 年') }`;
+  function getSelectedIndexes(){
+    return Array.from(document.querySelectorAll('.row-check'))
+      .filter(cb => cb.checked)
+      .map(cb => Number(cb.dataset.idx))
+      .filter(n => Number.isInteger(n));
+  }
 
-  const j = judgeStatus(expStr);
+  function makeRecordBase(type, name){
+    return {
+      id: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+      type,
+      name: name || '（未命名）',
+      createdAt: formatNowSlash()
+    };
+  }
 
-  // render result (和你要求的结构一致)
-  resultBox.innerHTML = `
-    <div class="record-card">
-      <div class="mb-2 small-muted">计算结果</div>
+  // ---------- 到期日计算 ----------
+  els.productionDate.addEventListener('input', () => normalizeDateInput(els.productionDate));
+  els.clearDateBtn.addEventListener('click', () => els.productionDate.value = '');
+  els.resetBtn.addEventListener('click', () => {
+    els.productName1.value = '';
+    els.productionDate.value = '';
+    els.shelfValue.value = '';
+    els.shelfUnit.value = 'days';
+    renderResultBox(els.resultBox1, '请输入生产日期和保质期信息，然后点击“计算到期日”。');
+  });
 
-      <div class="mb-2">
-        <div class="text-muted" style="font-size:0.92rem">到期日期</div>
-        <div class="fs-5 fw-bold">${expStr}</div>
-      </div>
+  let lastExpiryResult = null;
+  els.calcBtn.addEventListener('click', () => {
+    const name = els.productName1.value.trim() || '（未命名）';
+    const prodStr = els.productionDate.value.trim();
+    const val = Number(els.shelfValue.value);
+    const unit = els.shelfUnit.value;
 
-      <div class="record-meta mb-1">商品名称：${name}</div>
-      <div class="record-meta mb-1">生产日期：${prod} ｜ 保质期：${lifeText}</div>
-      <div class="record-meta mb-1">剩余天数：${j.diffDays} 天</div>
+    if (!prodStr || !Number.isFinite(val)) { alert('请填写生产日期和保质期时长'); return; }
+    const base = parseDateInput(prodStr);
+    if (!base) { alert('生产日期格式不正确'); return; }
 
-      <div class="mt-2">状态： <span class="badge ${j.badgeClass}">${j.statusText}</span></div>
+    const exp = addDuration(base, val, unit);
+    const expStr = formatDate(exp);
+    const lifeText = `${val}${unitLabel(unit)}`;
+    const status = judgeStatus(exp);
 
-      <div class="mt-3">
-        <button id="saveBtn" class="btn btn-sm btn-outline-primary">保存结果</button>
-      </div>
-    </div>
-  `;
-
-  // attach save handler
-  document.getElementById('saveBtn').onclick = function(){
-    const rec = {
+    lastExpiryResult = {
+      type: 'expiry',
       name,
-      productionDate: prod,
+      productionDate: prodStr,
       shelfLife: lifeText,
       expirationDate: expStr,
-      diffDays: j.diffDays,
-      status: j.statusText,
-      savedAt: formatNowSlash()
+      status: status.statusText,
+      diffDays: status.diffDays,
+      mode: '',
+      resultText: expStr
     };
-    records.push(rec);
-    updateStorage();
-    renderSavedList();
-    // switch to saved tab
-    const savedTabBtn = document.querySelector('[data-bs-target="#tabSaved"]');
-    if (savedTabBtn) savedTabBtn.click();
-    alert('已保存到结果列表');
-  };
-});
 
-/* --------- render saved list in desired layout --------- */
-function renderSavedList(){
-  savedList.innerHTML = '';
-  if (records.length === 0) {
-    savedList.innerHTML = `<div class="alert alert-secondary">暂无已保存记录。</div>`;
-    return;
-  }
+    renderResultBox(els.resultBox1, `
+      <div class="record-card mb-0">
+        <div class="record-name mb-2">${escapeHtml(name)}</div>
+        <div class="record-meta mb-1">生产日期：${escapeHtml(prodStr)} ｜ 保质期：${escapeHtml(lifeText)}</div>
+        <div class="mb-1 fs-5 fw-bold">到期日期：${escapeHtml(expStr)}</div>
+        <div class="record-meta mb-1">剩余天数：${status.diffDays} 天</div>
+        <div class="mt-2">状态： <span class="badge ${status.badgeClass}">${status.statusText}</span></div>
+        <div class="mt-3">
+          <button class="btn btn-sm btn-outline-primary" id="saveExpiryBtn">保存结果</button>
+        </div>
+      </div>
+    `);
 
-  records.forEach((r, idx)=>{
-    // compute status again (ensure badge class kept consistent if time passed)
-    const j = judgeStatus(r.expirationDate);
-    // update status fields in data (keep status sync)
-    r.status = j.statusText;
-    r.diffDays = j.diffDays;
-    // container
-    const wrap = document.createElement('div');
-    wrap.className = 'record-card d-flex align-items-start';
-    // left: checkbox
-    const left = document.createElement('div');
-    left.style.marginRight = '12px';
-    left.innerHTML = `<input type="checkbox" class="form-check-input row-check" data-idx="${idx}">`;
-    // center: content
-    const center = document.createElement('div');
-    center.style.flex = '1';
-    center.innerHTML = `
-      <div class="fw-bold mb-1">${escapeHtml(r.name)}</div>
-      <div class="record-meta mb-1">生产日期：${r.productionDate} ｜ 保质期：${r.shelfLife}</div>
-      <div class="mb-1">到期日：<b>${r.expirationDate}</b> <span class="badge ${j.badgeClass} ms-2">${j.statusText}</span></div>
-      <div class="small-muted">保存时间：${r.savedAt}</div>
-    `;
-    // right: actions
-    const right = document.createElement('div');
-    right.className = 'd-flex flex-column align-items-end ms-3';
-    right.innerHTML = `
-      <button class="btn btn-icon btn-sm btn-outline-danger mb-2 delete-single" title="删除" data-idx="${idx}"><i class="bi bi-trash"></i></button>
-    `;
-    wrap.appendChild(left);
-    wrap.appendChild(center);
-    wrap.appendChild(right);
-    savedList.appendChild(wrap);
+    $('saveExpiryBtn').onclick = () => {
+      records.push({ ...makeRecordBase('expiry', name), ...lastExpiryResult });
+      updateStorage();
+      renderSavedList();
+      const savedTabBtn = document.querySelector('[data-bs-target="#tabSaved"]');
+      if (savedTabBtn) savedTabBtn.click();
+      alert('已保存到结果列表');
+    };
   });
 
-  // hook delete buttons & checkboxes
-  document.querySelectorAll('.delete-single').forEach(btn=>{
-    btn.onclick = function(){
-      const i = parseInt(this.getAttribute('data-idx'));
-      if (!isNaN(i) && confirm('确认删除该条记录？')) {
-        records.splice(i,1);
+  // ---------- 时间差计算 ----------
+  els.startDate.addEventListener('input', () => normalizeDateInput(els.startDate));
+  els.endDate.addEventListener('input', () => normalizeDateInput(els.endDate));
+  els.resetDiffBtn.addEventListener('click', () => {
+    els.productName2.value = '';
+    els.startDate.value = '';
+    els.endDate.value = '';
+    els.diffMode.value = 'inclusive';
+    renderResultBox(els.resultBox2, '请输入起始日期、结束日期和计算模式，然后点击“计算时间差”。');
+  });
+
+  let lastDiffResult = null;
+  els.calcDiffBtn.addEventListener('click', () => {
+    const name = els.productName2.value.trim() || '（未命名）';
+    const startStr = els.startDate.value.trim();
+    const endStr = els.endDate.value.trim();
+    const mode = els.diffMode.value;
+    const start = parseDateInput(startStr);
+    const end = parseDateInput(endStr);
+
+    if (!start || !end) { alert('请填写正确的起始日期和结束日期'); return; }
+    if (stripTime(end) < stripTime(start)) { alert('结束日期不能早于起始日期'); return; }
+
+    const diffBase = Math.floor((stripTime(end) - stripTime(start)) / 86400000);
+    const days = mode === 'inclusive' ? diffBase + 1 : diffBase;
+
+    lastDiffResult = {
+      type: 'diff',
+      name,
+      startDate: startStr,
+      endDate: endStr,
+      mode: modeLabel(mode),
+      diffDays: days,
+      resultText: `${days} 天`
+    };
+
+    renderResultBox(els.resultBox2, `
+      <div class="record-card mb-0">
+        <div class="record-name mb-2">${escapeHtml(name)}</div>
+        <div class="record-meta mb-1">起始日期：${escapeHtml(startStr)} ｜ 结束日期：${escapeHtml(endStr)}</div>
+        <div class="record-meta mb-1">计算模式：${escapeHtml(modeLabel(mode))}</div>
+        <div class="mb-1 fs-5 fw-bold">相差：${days} 天</div>
+        <div class="mt-3">
+          <button class="btn btn-sm btn-outline-primary" id="saveDiffBtn">保存结果</button>
+        </div>
+      </div>
+    `);
+
+    $('saveDiffBtn').onclick = () => {
+      records.push({ ...makeRecordBase('diff', name), ...lastDiffResult });
+      updateStorage();
+      renderSavedList();
+      const savedTabBtn = document.querySelector('[data-bs-target="#tabSaved"]');
+      if (savedTabBtn) savedTabBtn.click();
+      alert('已保存到结果列表');
+    };
+  });
+
+  // ---------- 倒推生产日期 ----------
+  els.expirationDate.addEventListener('input', () => normalizeDateInput(els.expirationDate));
+  els.resetReverseBtn.addEventListener('click', () => {
+    els.productName3.value = '';
+    els.expirationDate.value = '';
+    els.reverseShelfValue.value = '';
+    els.reverseShelfUnit.value = 'days';
+    renderResultBox(els.resultBox3, '请输入过期日期和保质期信息，然后点击“倒推生产日期”。');
+  });
+
+  let lastReverseResult = null;
+  els.calcReverseBtn.addEventListener('click', () => {
+    const name = els.productName3.value.trim() || '（未命名）';
+    const expStr = els.expirationDate.value.trim();
+    const val = Number(els.reverseShelfValue.value);
+    const unit = els.reverseShelfUnit.value;
+    const exp = parseDateInput(expStr);
+
+    if (!exp || !Number.isFinite(val)) { alert('请填写过期日期和保质期时长'); return; }
+
+    const prod = subtractDuration(exp, val, unit);
+    const prodStr = formatDate(prod);
+    const lifeText = `${val}${unitLabel(unit)}`;
+    const status = judgeStatus(exp);
+
+    lastReverseResult = {
+      type: 'reverse',
+      name,
+      expirationDate: expStr,
+      shelfLife: lifeText,
+      productionDate: prodStr,
+      status: status.statusText,
+      diffDays: status.diffDays,
+      mode: '',
+      resultText: prodStr
+    };
+
+    renderResultBox(els.resultBox3, `
+      <div class="record-card mb-0">
+        <div class="record-name mb-2">${escapeHtml(name)}</div>
+        <div class="record-meta mb-1">过期日期：${escapeHtml(expStr)} ｜ 保质期：${escapeHtml(lifeText)}</div>
+        <div class="mb-1 fs-5 fw-bold">生产日期：${escapeHtml(prodStr)}</div>
+        <div class="record-meta mb-1">到期状态：<span class="badge ${status.badgeClass}">${status.statusText}</span></div>
+        <div class="mt-3">
+          <button class="btn btn-sm btn-outline-primary" id="saveReverseBtn">保存结果</button>
+        </div>
+      </div>
+    `);
+
+    $('saveReverseBtn').onclick = () => {
+      records.push({ ...makeRecordBase('reverse', name), ...lastReverseResult });
+      updateStorage();
+      renderSavedList();
+      const savedTabBtn = document.querySelector('[data-bs-target="#tabSaved"]');
+      if (savedTabBtn) savedTabBtn.click();
+      alert('已保存到结果列表');
+    };
+  });
+
+  // ---------- saved list ----------
+  function typeLabel(type){
+    return ({expiry:'到期日计算', diff:'时间差计算', reverse:'倒推生产日期'})[type] || '计算结果';
+  }
+
+  function buildDisplayHTML(rec){
+    if (rec.type === 'expiry') {
+      const status = judgeStatus(parseDateInput(rec.expirationDate));
+      return `
+        <div class="fw-bold mb-1">${escapeHtml(rec.name)}</div>
+        <div class="record-meta mb-1">类型：${typeLabel(rec.type)} ｜ 生产日期：${escapeHtml(rec.productionDate)} ｜ 保质期：${escapeHtml(rec.shelfLife)}</div>
+        <div class="mb-1">到期日：<b>${escapeHtml(rec.expirationDate)}</b> <span class="badge ${status.badgeClass} ms-2">${status.statusText}</span></div>
+        <div class="small-muted">保存时间：${escapeHtml(rec.createdAt)}</div>
+      `;
+    }
+    if (rec.type === 'diff') {
+      return `
+        <div class="fw-bold mb-1">${escapeHtml(rec.name)}</div>
+        <div class="record-meta mb-1">类型：${typeLabel(rec.type)} ｜ 起始日期：${escapeHtml(rec.startDate)} ｜ 结束日期：${escapeHtml(rec.endDate)}</div>
+        <div class="mb-1">计算模式：${escapeHtml(rec.mode)} ｜ 相差：<b>${escapeHtml(rec.resultText)}</b></div>
+        <div class="small-muted">保存时间：${escapeHtml(rec.createdAt)}</div>
+      `;
+    }
+    if (rec.type === 'reverse') {
+      const status = judgeStatus(parseDateInput(rec.expirationDate));
+      return `
+        <div class="fw-bold mb-1">${escapeHtml(rec.name)}</div>
+        <div class="record-meta mb-1">类型：${typeLabel(rec.type)} ｜ 过期日期：${escapeHtml(rec.expirationDate)} ｜ 保质期：${escapeHtml(rec.shelfLife)}</div>
+        <div class="mb-1">生产日期：<b>${escapeHtml(rec.productionDate)}</b> <span class="badge ${status.badgeClass} ms-2">${status.statusText}</span></div>
+        <div class="small-muted">保存时间：${escapeHtml(rec.createdAt)}</div>
+      `;
+    }
+    return `
+      <div class="fw-bold mb-1">${escapeHtml(rec.name)}</div>
+      <div class="record-meta mb-1">类型：${typeLabel(rec.type)}</div>
+      <div class="small-muted">保存时间：${escapeHtml(rec.createdAt)}</div>
+    `;
+  }
+
+  function renderSavedList(){
+    savedList.innerHTML = '';
+    if (!records.length) {
+      savedList.innerHTML = `<div class="alert alert-secondary mb-0">暂无已保存记录。</div>`;
+      updateStorage();
+      return;
+    }
+
+    records.forEach((rec, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'record-card d-flex align-items-start';
+      wrap.innerHTML = `
+        <div class="me-3 pt-1"><input type="checkbox" class="form-check-input row-check" data-idx="${idx}"></div>
+        <div class="flex-grow-1">${buildDisplayHTML(rec)}</div>
+        <div class="ms-3">
+          <button class="btn btn-icon btn-outline-danger delete-single" data-idx="${idx}" title="删除">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+      savedList.appendChild(wrap);
+    });
+
+    document.querySelectorAll('.delete-single').forEach(btn => {
+      btn.onclick = function(){
+        const i = Number(this.dataset.idx);
+        if (!Number.isInteger(i)) return;
+        if (!confirm('确认删除该条记录？')) return;
+        records.splice(i, 1);
         updateStorage();
         renderSavedList();
-      }
-    };
-  });
+      };
+    });
 
-  // when rendered, ensure selectAll unchecked
-  selectAll.checked = false;
-}
-
-/* --------- select all logic --------- */
-selectAll.addEventListener('change', function(){
-  const checked = this.checked;
-  document.querySelectorAll('.row-check').forEach(cb => cb.checked = checked);
-});
-
-/* --------- delete selected --------- */
-deleteSelectedBtn.addEventListener('click', ()=>{
-  const checkedEls = Array.from(document.querySelectorAll('.row-check')).filter(cb => cb.checked);
-  if (checkedEls.length === 0) { alert('请先选中要删除的记录'); return; }
-  if (!confirm(`确认删除 ${checkedEls.length} 条选中记录？`)) return;
-  // collect indexes descending to remove safely
-  const idxs = checkedEls.map(cb => parseInt(cb.getAttribute('data-idx'))).sort((a,b)=>b-a);
-  idxs.forEach(i => { if (!isNaN(i)) records.splice(i,1); });
-  updateStorage();
-  renderSavedList();
-});
-
-/* --------- clear all --------- */
-clearAllBtn.addEventListener('click', ()=>{
-  if (!confirm('确认清空所有已保存记录？')) return;
-  records = [];
-  updateStorage();
-  renderSavedList();
-});
-
-/* --------- export selected --------- */
-exportBtn.addEventListener('click', ()=>{
-  const checkedEls = Array.from(document.querySelectorAll('.row-check')).filter(cb => cb.checked);
-  let toExport = [];
-  if (checkedEls.length === 0) {
-    // 没选中则导出全部
-    toExport = records.slice();
-    if (toExport.length === 0) { alert('没有可导出的记录'); return; }
-  } else {
-    // 按选中顺序
-    const idxs = checkedEls.map(cb => parseInt(cb.getAttribute('data-idx'))).sort((a,b)=>a-b);
-    idxs.forEach(i => { if (!isNaN(i) && records[i]) toExport.push(records[i]); });
+    selectAll.checked = false;
   }
 
-  // build sheet data
-  const sheet = [
-    ['商品名称','生产日期','保质期','到期日','状态','剩余天数','保存时间']
-  ];
-  toExport.forEach(r => {
-    sheet.push([ r.name, r.productionDate, r.shelfLife, r.expirationDate, r.status, r.diffDays, r.savedAt ]);
+  selectAll.addEventListener('change', function(){
+    document.querySelectorAll('.row-check').forEach(cb => cb.checked = this.checked);
   });
 
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(sheet);
-  XLSX.utils.book_append_sheet(wb, ws, '保质期结果');
-  XLSX.writeFile(wb, `expiry_export_${(new Date()).getTime()}.xlsx`);
-});
-
-/* --------- XSS-safe text escape for display --------- */
-function escapeHtml(s){
-  if (!s && s !== 0) return '';
-  return String(s).replace(/[&<>"']/g, function(m){
-    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  els.deleteSelectedBtn.addEventListener('click', () => {
+    const idxs = getSelectedIndexes().sort((a,b) => b - a);
+    if (!idxs.length) { alert('请先选中要删除的记录'); return; }
+    if (!confirm(`确认删除 ${idxs.length} 条选中记录？`)) return;
+    idxs.forEach(i => records.splice(i, 1));
+    updateStorage();
+    renderSavedList();
   });
-}
 
-/* initial render */
-renderSavedList();
-updateStorage();
+  els.clearAllBtn.addEventListener('click', () => {
+    if (!confirm('确认清空所有已保存记录？')) return;
+    records = [];
+    updateStorage();
+    renderSavedList();
+  });
 
+  function getRowsForExport(selectedOnly){
+    let source = records.slice();
+    if (selectedOnly) {
+      const idxs = getSelectedIndexes().sort((a,b) => a - b);
+      source = idxs.map(i => records[i]).filter(Boolean);
+    }
+    if (!source.length) return [];
+
+    const rows = source.map(rec => {
+      if (rec.type === 'expiry') {
+        return {
+          类型: typeLabel(rec.type),
+          商品名称: rec.name,
+          起始日期: rec.productionDate || '',
+          结束日期: '',
+          过期日期: rec.expirationDate || '',
+          保质期: rec.shelfLife || '',
+          计算模式: '',
+          结果: rec.expirationDate || '',
+          状态: rec.status || '',
+          保存时间: rec.createdAt || ''
+        };
+      }
+      if (rec.type === 'diff') {
+        return {
+          类型: typeLabel(rec.type),
+          商品名称: rec.name,
+          起始日期: rec.startDate || '',
+          结束日期: rec.endDate || '',
+          过期日期: '',
+          保质期: '',
+          计算模式: rec.mode || '',
+          结果: rec.resultText || '',
+          状态: '',
+          保存时间: rec.createdAt || ''
+        };
+      }
+      if (rec.type === 'reverse') {
+        return {
+          类型: typeLabel(rec.type),
+          商品名称: rec.name,
+          起始日期: '',
+          结束日期: '',
+          过期日期: rec.expirationDate || '',
+          保质期: rec.shelfLife || '',
+          计算模式: '',
+          结果: rec.productionDate || '',
+          状态: rec.status || '',
+          保存时间: rec.createdAt || ''
+        };
+      }
+      return {
+        类型: typeLabel(rec.type),
+        商品名称: rec.name || '',
+        起始日期: '', 结束日期: '', 过期日期: '', 保质期: '', 计算模式: '', 结果: rec.resultText || '', 状态: rec.status || '', 保存时间: rec.createdAt || ''
+      };
+    });
+
+    return rows;
+  }
+
+  function downloadBlob(filename, mimeType, content){
+    const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function exportToCSV(rows, filename){
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')].concat(rows.map(row => headers.map(h => {
+      const v = row[h] ?? '';
+      const s = String(v).replace(/"/g, '""');
+      return /[",\n]/.test(s) ? `"${s}"` : s;
+    }).join(','))).join('\n');
+    downloadBlob(filename, 'text/csv;charset=utf-8;', '\ufeff' + csv);
+  }
+
+  function exportToXLSX(rows, filename){
+    if (!window.XLSX || !XLSX.utils) return false;
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '结果');
+    XLSX.writeFile(wb, filename);
+    return true;
+  }
+
+  els.exportBtn.addEventListener('click', () => {
+    const rows = getRowsForExport(true);
+    if (!rows.length) {
+      if (!records.length) { alert('没有可导出的记录'); return; }
+      if (!confirm('没有选中记录，是否导出全部？')) return;
+      const allRows = getRowsForExport(false);
+      const filename = `calculation_export_${Date.now()}`;
+      if (!exportToXLSX(allRows, `${filename}.xlsx`)) exportToCSV(allRows, `${filename}.csv`);
+      return;
+    }
+
+    const filename = `calculation_export_${Date.now()}`;
+    if (!exportToXLSX(rows, `${filename}.xlsx`)) exportToCSV(rows, `${filename}.csv`);
+  });
+
+  // ---------- init ----------
+  renderSavedList();
+  updateStorage();
+})();
 </script>
+
+<div class="bottom-nav">
+  <div class="nav-item active" data-target="toolExpiry"><i class="bi bi-bag-check"></i><span>算保质期</span></div>
+  <div class="nav-item" data-target="toolDiff"><i class="bi bi-calendar-week"></i><span>时间差</span></div>
+  <div class="nav-item" data-target="toolReverse"><i class="bi bi-arrow-counterclockwise"></i><span>日期倒推</span></div>
+</div>
+
+<script>
+document.querySelectorAll('.bottom-nav .nav-item').forEach(item=>{
+  item.addEventListener('click',function(){
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(i=>i.classList.remove('active'));
+    this.classList.add('active');
+
+    document.querySelectorAll('#toolExpiry,#toolDiff,#toolReverse')
+      .forEach(el=>el.classList.remove('show','active'));
+
+    document.getElementById(this.dataset.target).classList.add('show','active');
+  });
+});
+</script>
+
 </body>
 </html>
